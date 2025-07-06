@@ -15,7 +15,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->tl_time->setText("00:00:00:00");
 
     connect(stopwatch, &Stopwatch::timeUpdated, this, &MainWindow::updateTimeDisplay);
-    connect(stopwatch, &Stopwatch::lapUpdated, this, &MainWindow::addLap);
 }
 
 MainWindow::~MainWindow()
@@ -42,7 +41,10 @@ void MainWindow::on_pb_start_stop_clicked()
 
 void MainWindow::on_pb_lap_clicked()
 {
-    stopwatch->lap();
+    QString lapInfo = stopwatch->lap();
+    if (!lapInfo.isEmpty()) {
+        ui->tb_lap_info->append(lapInfo);
+    }
 }
 
 void MainWindow::on_pb_reset_clicked()
