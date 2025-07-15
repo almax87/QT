@@ -231,47 +231,38 @@ void MainWindow::on_pb_start_clicked()
 
 void MainWindow::showGraph(QVector<double> data)
 {
-    // Создаем новое окно для графика
-    QWidget *graphWindow = new QWidget();
+    QWidget *graphWindow = new QWidget(nullptr, Qt::Window);
+    graphWindow->setAttribute(Qt::WA_DeleteOnClose);
     graphWindow->setWindowTitle("График данных");
     graphWindow->setMinimumSize(800, 600);
 
-    // Создаем график
     QChart *chart = new QChart();
-    chart->setTitle("Первая секунда данных");
-
-    // Создаем серию данных
     QLineSeries *series = new QLineSeries();
+    QValueAxis *axisX = new QValueAxis();
+    QValueAxis *axisY = new QValueAxis();
 
-    // Добавляем только первую секунду данных (1000 точек при частоте дискретизации 1000 Гц)
     int pointsToShow = qMin(data.size(), static_cast<int>(FD));
     for (int i = 0; i < pointsToShow; ++i) {
-        series->append(i/FD, data[i]); // По оси X - время в секундах
+        series->append(i/FD, data[i]);
     }
 
     chart->addSeries(series);
-
-    // Настраиваем оси
-    QValueAxis *axisX = new QValueAxis();
+    chart->addAxis(axisX, Qt::AlignBottom);
+    chart->addAxis(axisY, Qt::AlignLeft);
+    series->attachAxis(axisX);
+    series->attachAxis(axisY);
+    chart->setTitle("Первая секунда данных");
     axisX->setTitleText("Время, с");
     axisX->setRange(0, 1.0);
-    chart->addAxis(axisX, Qt::AlignBottom);
-    series->attachAxis(axisX);
-
-    QValueAxis *axisY = new QValueAxis();
     axisY->setTitleText("Значение, В");
-    chart->addAxis(axisY, Qt::AlignLeft);
-    series->attachAxis(axisY);
 
-    // Создаем view для графика
-    QChartView *chartView = new QChartView(chart);
+    QChartView *chartView = new QChartView(chart, graphWindow);
     chartView->setRenderHint(QPainter::Antialiasing);
 
-    // Размещаем график в окне
     QVBoxLayout *layout = new QVBoxLayout(graphWindow);
     layout->addWidget(chartView);
+    graphWindow->setLayout(layout);
 
-    // Показываем окно
     graphWindow->show();
 }
 
