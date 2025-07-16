@@ -8,7 +8,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     udpWorker = new UDPworker(this);
-    udpWorker->InitSocket();
+    udpWorker->InitTimeSocket();  // Для временных меток
+    udpWorker->InitTextSocket();  // Для текстовых сообщений
 
     connect(udpWorker, &UDPworker::sig_sendTimeToGUI, this, &MainWindow::DisplayTime);
     connect(udpWorker, &UDPworker::sig_sendTextToGUI, this, &MainWindow::DisplayText);
@@ -19,8 +20,17 @@ MainWindow::MainWindow(QWidget *parent)
         QByteArray dataToSend;
         QDataStream outStr(&dataToSend, QIODevice::WriteOnly);
         outStr << dateTime;
-        udpWorker->SendDatagram(dataToSend);
+        udpWorker->SendTimeDatagram(dataToSend);
     });
+}
+
+void MainWindow::on_pb_sendText_clicked()
+{
+    QString text = ui->le_textInput->text();
+    if(!text.isEmpty()) {
+        udpWorker->SendTextDatagram(text);
+        ui->le_textInput->clear();
+    }
 }
 
 MainWindow::~MainWindow()
@@ -48,21 +58,14 @@ void MainWindow::on_pb_stop_clicked()
     timer->stop();
 }
 
-void MainWindow::on_pb_sendText_clicked()
-{
-    QString text = ui->le_textInput->text();
-    if (!text.isEmpty()) {
-        udpWorker->SendTextDatagram(text);
-        ui->le_textInput->clear();
-    }
-}
-
 void MainWindow::DisplayText(QString text, QHostAddress senderAddress, quint16 senderPort)
 {
     int size = text.toUtf8().size();
-    ui->te_result->append(QString("Принято сообщение от %1:%2, размер сообщения (байт): %3")
-                              .arg(senderAddress.toString())
-                              .arg(senderPort)
-                              .arg(size));
-    ui->te_result->append("Текст: " + text);
+    QString message = QString("Принято сообщение от %1:%2, размер: %3 байт\nТекст: %4")
+                          .arg(senderAddress.toString())
+                          .arg(senderPort)
+                          .arg(size)
+                          .arg(text);
+
+    ui->te_result->append(message);
 }

@@ -1,49 +1,69 @@
 #include "udpworker.h"
 
-UDPworker::UDPworker(QObject *parent) : QObject(parent)
+UDPworker::UDPworker(QObject *parent) : QObject(parent),
+    timeSocket(nullptr),
+    textSocket(nullptr)
 {
 }
 
-void UDPworker::InitSocket()
+void UDPworker::InitTimeSocket()
 {
-    serviceUdpSocket = new QUdpSocket(this);
-    serviceUdpSocket->bind(QHostAddress::LocalHost, BIND_PORT);
-    connect(serviceUdpSocket, &QUdpSocket::readyRead, this, &UDPworker::readPendingDatagrams);
+    timeSocket = new QUdpSocket(this);
+    timeSocket->bind(QHostAddress::LocalHost, TIME_PORT);
+    connect(timeSocket, &QUdpSocket::readyRead, this, &UDPworker::readTimeDatagrams);
 }
 
-void UDPworker::ReadDatagram(QNetworkDatagram datagram)
+void UDPworker::InitTextSocket()
 {
-    QByteArray data = datagram.data();
-
-    // Проверяем, содержит ли датаграмма QDateTime (старый функционал)
-    QDataStream inStr(&data, QIODevice::ReadOnly);
-    QDateTime dateTime;
-    inStr >> dateTime;
-
-    if (dateTime.isValid()) {
-        emit sig_sendTimeToGUI(dateTime);
-    } else {
-        // Если это не QDateTime, то считаем это текстовым сообщением
-        QString text = QString::fromUtf8(data);
-        emit sig_sendTextToGUI(text, datagram.senderAddress(), datagram.senderPort());
-    }
+    textSocket = new QUdpSocket(this);
+    textSocket->bind(QHostAddress::LocalHost, TEXT_PORT);
+    connect(textSocket, &QUdpSocket::readyRead, this, &UDPworker::readTextDatagrams);
 }
 
-void UDPworker::SendDatagram(QByteArray data)
+void UDPworker::SendTimeDatagram(QByteArray data)
 {
-    serviceUdpSocket->writeDatagram(data, QHostAddress::LocalHost, BIND_PORT);
+    if(timeSocket)
+        timeSocket->writeDatagram(data, QHostAddress::LocalHost, TIME_PORT);
 }
 
 void UDPworker::SendTextDatagram(QString text)
 {
-    QByteArray data = text.toUtf8();
-    serviceUdpSocket->writeDatagram(data, QHostAddress::LocalHost, BIND_PORT);
+    if(textSocket) {
+        QByteArray data = text.toUtf8();
+        textSocket->writeDatagram(data, QHostAddress::LocalHost, TEXT_PORT);
+    }
 }
 
-void UDPworker::readPendingDatagrams(void)
+void UDPworker::readTimeDatagrams()
 {
-    while(serviceUdpSocket->hasPendingDatagrams()){
-        QNetworkDatagram datagram = serviceUdpSocket->receiveDatagram();
-        ReadDatagram(datagram);
+    while(timeSocket->hasPendingDatagrams()){
+        QNetworkDatagram datagram = timeSocket->receiveDatagram();
+        processTimeDatagram(datagram);
     }
+}
+
+void UDPworker::readTextDatagrams()
+{
+    while(textSocket->hasPendingDatagrams()){
+        QNetworkDatagram datagram = textSocket->receiveDatagram();
+        processTextDatagram(datagram);
+    }
+}
+
+void UDPworker::processTimeDatagram(QNetworkDatagram datagram)
+{
+    QByteArray data = datagram.data();
+    QDataStream inStr(&data, QIODevice::ReadOnly);
+    QDateTime dateTime;
+    inStr >> dateTime;
+
+    if(dateTime.isValid()) {
+        emit sig_sendTimeToGUI(dateTime);
+    }
+}
+
+void UDPworker::processTextDatagram(QNetworkDatagram datagram)
+{
+    QString text = QString::fromUtf8(datagram.data());
+    emit sig_sendTextToGUI(text, datagram.senderAddress(), datagram.senderPort());
 }

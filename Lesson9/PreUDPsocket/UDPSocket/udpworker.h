@@ -5,29 +5,32 @@
 #include <QNetworkDatagram>
 #include <QDateTime>
 
-
-#define BIND_PORT 12345
+#define TIME_PORT 12345
+#define TEXT_PORT 12346
 
 class UDPworker : public QObject
 {
     Q_OBJECT
 public:
     explicit UDPworker(QObject *parent = nullptr);
-    void InitSocket( void );
-    void ReadDatagram( QNetworkDatagram datagram);
-    void SendDatagram(QByteArray data );
+    void InitTimeSocket();
+    void InitTextSocket();
+    void SendTimeDatagram(QByteArray data);
     void SendTextDatagram(QString text);
 
 private slots:
-    void readPendingDatagrams(void);
+    void readTimeDatagrams();
+    void readTextDatagrams();
 
 private:
-    QUdpSocket* serviceUdpSocket;
+    QUdpSocket* timeSocket;
+    QUdpSocket* textSocket;
+    void processTimeDatagram(QNetworkDatagram datagram);
+    void processTextDatagram(QNetworkDatagram datagram);
 
 signals:
     void sig_sendTimeToGUI(QDateTime data);
     void sig_sendTextToGUI(QString text, QHostAddress senderAddress, quint16 senderPort);
-
 };
 
 #endif // UDPWORKER_H

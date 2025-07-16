@@ -26,6 +26,7 @@ private slots:
     void on_pb_sendText_clicked();
     void DisplayText(QString text, QHostAddress senderAddress, quint16 senderPort);
 
+
 private:
     Ui::MainWindow *ui;
     QTimer* timer;
