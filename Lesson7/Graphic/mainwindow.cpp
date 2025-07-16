@@ -237,9 +237,9 @@ void MainWindow::showGraph(QVector<double> data)
     graphWindow->setMinimumSize(800, 600);
 
     QChart *chart = new QChart();
-    QLineSeries *series = new QLineSeries();
-    QValueAxis *axisX = new QValueAxis();
-    QValueAxis *axisY = new QValueAxis();
+    QLineSeries *series = new QLineSeries(chart);
+    QValueAxis *axisX = new QValueAxis(chart);
+    QValueAxis *axisY = new QValueAxis(chart);
 
     int pointsToShow = qMin(data.size(), static_cast<int>(FD));
     for (int i = 0; i < pointsToShow; ++i) {
