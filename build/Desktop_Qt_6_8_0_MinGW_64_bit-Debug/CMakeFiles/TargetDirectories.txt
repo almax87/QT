@@ -1,5 +1,0 @@
-C:/Users/almax/Documents/Netology/QT/Lesson10/PreTCPclient/TCPclient/build/Desktop_Qt_6_8_0_MinGW_64_bit-Debug/CMakeFiles/10_TCPclient.dir
-C:/Users/almax/Documents/Netology/QT/Lesson10/PreTCPclient/TCPclient/build/Desktop_Qt_6_8_0_MinGW_64_bit-Debug/CMakeFiles/edit_cache.dir
-C:/Users/almax/Documents/Netology/QT/Lesson10/PreTCPclient/TCPclient/build/Desktop_Qt_6_8_0_MinGW_64_bit-Debug/CMakeFiles/rebuild_cache.dir
-C:/Users/almax/Documents/Netology/QT/Lesson10/PreTCPclient/TCPclient/build/Desktop_Qt_6_8_0_MinGW_64_bit-Debug/CMakeFiles/10_TCPclient_autogen_timestamp_deps.dir
-C:/Users/almax/Documents/Netology/QT/Lesson10/PreTCPclient/TCPclient/build/Desktop_Qt_6_8_0_MinGW_64_bit-Debug/CMakeFiles/10_TCPclient_autogen.dir
