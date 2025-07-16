@@ -1,0 +1,78 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Debug-d0094a50bb2071803777.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "10_TCPclient",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "10_TCPclient::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-10_TCPclient-Debug-58a0b8e2826a975d9d43.json",
+					"name" : "10_TCPclient",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "10_TCPclient_autogen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-10_TCPclient_autogen-Debug-f10c11136be587ed0f11.json",
+					"name" : "10_TCPclient_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "10_TCPclient_autogen_timestamp_deps::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-10_TCPclient_autogen_timestamp_deps-Debug-00c430fb9d02f23b6357.json",
+					"name" : "10_TCPclient_autogen_timestamp_deps",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "C:/Users/almax/Documents/Netology/QT/Lesson10/PreTCPclient/TCPclient/build/Desktop_Qt_6_8_0_MinGW_64_bit-Debug",
+		"source" : "C:/Users/almax/Documents/Netology/QT/Lesson10/PreTCPclient/TCPclient"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 7
+	}
+}
