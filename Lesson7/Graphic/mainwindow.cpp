@@ -231,37 +231,51 @@ void MainWindow::on_pb_start_clicked()
 
 void MainWindow::showGraph(QVector<double> data)
 {
-    QWidget *graphWindow = new QWidget(nullptr, Qt::Window);
+    if (graphWindow) {
+        graphWindow->close();
+        graphWindow.clear();
+    }
+
+    graphWindow = new QWidget(nullptr, Qt::Window);
     graphWindow->setAttribute(Qt::WA_DeleteOnClose);
     graphWindow->setWindowTitle("График данных");
     graphWindow->setMinimumSize(800, 600);
 
-    QChart *chart = new QChart();
-    QLineSeries *series = new QLineSeries(chart);
-    QValueAxis *axisX = new QValueAxis(chart);
-    QValueAxis *axisY = new QValueAxis(chart);
+    if (currentChart) {
+        delete currentChart;
+        currentChart = nullptr;
+    }
+
+    currentChart = new QChart();
+    QLineSeries* series = new QLineSeries(currentChart);
+    QValueAxis* axisX = new QValueAxis(currentChart);
+    QValueAxis* axisY = new QValueAxis(currentChart);
 
     int pointsToShow = qMin(data.size(), static_cast<int>(FD));
     for (int i = 0; i < pointsToShow; ++i) {
         series->append(i/FD, data[i]);
     }
 
-    chart->addSeries(series);
-    chart->addAxis(axisX, Qt::AlignBottom);
-    chart->addAxis(axisY, Qt::AlignLeft);
+    currentChart->addSeries(series);
+    currentChart->addAxis(axisX, Qt::AlignBottom);
+    currentChart->addAxis(axisY, Qt::AlignLeft);
     series->attachAxis(axisX);
     series->attachAxis(axisY);
-    chart->setTitle("Первая секунда данных");
+    currentChart->setTitle("Первая секунда данных");
     axisX->setTitleText("Время, с");
     axisX->setRange(0, 1.0);
     axisY->setTitleText("Значение, В");
 
-    QChartView *chartView = new QChartView(chart, graphWindow);
+    QChartView* chartView = new QChartView(currentChart, graphWindow);
     chartView->setRenderHint(QPainter::Antialiasing);
 
-    QVBoxLayout *layout = new QVBoxLayout(graphWindow);
+    QVBoxLayout* layout = new QVBoxLayout(graphWindow);
     layout->addWidget(chartView);
     graphWindow->setLayout(layout);
+
+    connect(graphWindow, &QWidget::destroyed, this, [this]() {
+        currentChart = nullptr;
+    });
 
     graphWindow->show();
 }

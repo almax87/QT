@@ -40,17 +40,20 @@ public:
     void DisplayResult(QVector<double> mins, QVector<double> maxs);
 
 signals:
-    void dataReadyForGraph(QVector<double> data); // Сигнал о готовности данных для графика
+    void dataReadyForGraph(QVector<double> data);
 
 private slots:
     void on_pb_path_clicked();
     void on_pb_start_clicked();
-    void showGraph(QVector<double> data); // Слот для отображения графика
+    void showGraph(QVector<double> data);
 
 private:
     Ui::MainWindow *ui;
     QString pathToFile = "";
     uint8_t numberSelectChannel = 0xEA;
+
+    QPointer<QWidget> graphWindow;
+    QChart* currentChart = nullptr;
 
     QVector<uint32_t> readData;
     QVector<double> procesData;
